@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin: 10px 0;
+    }
+    button {
+      width: 100%;
+      padding: 8px;
+      background: #18A0FB;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1089DB;
+    }
+  </style>
+</head>
+<body>
+  <h3>텍스트 번역</h3>
+  <textarea id="sourceText" placeholder="번역할 텍스트를 입력하세요"></textarea>
+  <textarea id="translatedText" placeholder="번역된 텍스트가 여기에 표시됩니다" readonly></textarea>
+  <button id="translateBtn">번역하기</button>
+
+  <script>
+    onmessage = (event) => {
+      const msg = event.data.pluginMessage;
+      if (msg.type === 'selected-text') {
+        document.getElementById('sourceText').value = msg.text;
+      }
+    };
+
+    document.getElementById('translateBtn').onclick = async () => {
+      const sourceText = document.getElementById('sourceText').value;
+      const translatedText = await translateText(sourceText);
+      document.getElementById('translatedText').value = translatedText;
+      
+      parent.postMessage({ 
+        pluginMessage: { 
+          type: 'translate', 
+          translatedText: translatedText 
+        }
+      }, '*');
+    };
+
+    async function translateText(text) {
+      // 여기에 실제 번역 API 연동 코드를 추가하시면 됩니다
+      return text + " (번역됨)";
+    }
+  </script>
+</body>
+</html>
